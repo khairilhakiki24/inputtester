@@ -5,6 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formulir</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa; /* Warna latar belakang */
+      font-family: Arial, sans-serif; /* Pilihan font */
+    }
+
+    .container {
+      background-color: #fff; /* Warna latar belakang kontainer */
+      padding: 20px;
+      border-radius: 10px; /* Sudut elemen kontainer */
+      box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1); /* Efek bayangan */
+      max-width: 100%; /* Lebar maksimum kontainer */
+      margin: 20px auto; /* Posisi tengah */
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="time"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ced4da; /* Warna border input */
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    input[type="time"]:focus {
+      outline: none;
+      border-color: #007bff; /* Warna border input saat aktif */
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #007bff; /* Warna tombol */
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3; /* Warna tombol saat dihover */
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -38,31 +95,54 @@
     </form>
   </div>
 
+
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
-    $(document).ready(function() {
-      $('#myForm').submit(function(event) {
-        event.preventDefault();
-  
-        const formData = {
-          nama: $('#nama').val(),
-          tanggal: $('#tanggal').val(),
-          kodeUnit: $('#kodeUnit').val(),
-          mulaiKerja: $('#mulaiKerja').val(),
-          selesaiKerja: $('#selesaiKerja').val(),
-          foto: $('#foto').val()
-        };
-  
-        // Validasi sederhana
-        if (!formData.nama || !formData.tanggal || !formData.kodeUnit || !formData.mulaiKerja || !formData.selesaiKerja || !formData.foto) {
-          alert('Harap isi semua kolom!');
-          return;
-        }
+  $(document).ready(function() {
+    $('#myForm').submit(function(event) {
+      event.preventDefault();
 
-        google.script.run.addFormData(formData);
-      });
+      const formData = {
+        nama: $('#nama').val(),
+        tanggal: formatDate($('#tanggal').val()), // Memformat tanggal sebelum disimpan
+        kodeUnit: $('#kodeUnit').val(),
+        mulaiKerja: $('#mulaiKerja').val(),
+        selesaiKerja: $('#selesaiKerja').val(),
+        foto: $('#foto').val()
+      };
+
+      // Validasi sederhana
+      if (!formData.nama || !formData.tanggal || !formData.kodeUnit || !formData.mulaiKerja || !formData.selesaiKerja || !formData.foto) {
+        alert('Harap isi semua kolom!');
+        return;
+      }
+
+      google.script.run.withSuccessHandler(function(response) {
+        if (response === 'success') {
+          alert('Data berhasil disimpan!');
+          window.location.href = 'https://bejajadigital.id'; // Mengarahkan ke halaman google.com jika berhasil
+        } else {
+          alert('Data gagal disimpan!');
+        }
+      }).addFormData(formData);
     });
-  </script>
+  });
+
+  // Fungsi untuk memformat tanggal (tanggal/bulan/tahun)
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Bulan dimulai dari 0, maka ditambah 1
+    const year = date.getFullYear();
+
+    // Menambahkan leading zero jika day atau month kurang dari 10
+    const formattedDay = day < 10 ? '0' + day : day;
+    const formattedMonth = month < 10 ? '0' + month : month;
+
+    return formattedDay + '/' + formattedMonth + '/' + year;
+  }
+</script>
+
 </body>
 </html>
