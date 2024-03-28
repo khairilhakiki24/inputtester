@@ -40,11 +40,8 @@
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Tabletop.js/1.5.1/tabletop.min.js"></script>
   <script>
     $(document).ready(function() {
-      const publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/1BhxrVV3BDfw08T4Qw17XXh8ZVM-8JLW_evgOyonvp20/edit?usp=sharing';
-  
       $('#myForm').submit(function(event) {
         event.preventDefault();
   
@@ -62,34 +59,10 @@
           alert('Harap isi semua kolom!');
           return;
         }
-  
-        // Kirim data ke Google Sheets menggunakan Tabletop.js
-        Tabletop.init({
-          key: publicSpreadsheetUrl,
-          callback: function(sheet, tabletop) {
-            let data = {
-              Nama: formData.nama,
-              Tanggal: formData.tanggal,
-              'Kode Unit': formData.kodeUnit,
-              'Mulai Kerja': formData.mulaiKerja,
-              'Jam Selesai Kerja': formData.selesaiKerja,
-              'Foto Horse Meter': formData.foto
-            };
-  
-            tabletop.sheets('Sheet1').add(data);
-  
-            // Tampilkan notifikasi jika data berhasil dimasukkan
-            alert('Data berhasil dimasukkan!');
-          },
-          simpleSheet: true,
-          callbackError: function(error) {
-            // Tampilkan notifikasi jika terjadi kesalahan
-            alert('Terjadi kesalahan saat mengirim data ke Google Sheets. Data belum masuk.');
-          }
-        });
+
+        google.script.run.addFormData(formData);
       });
     });
   </script>
-  
 </body>
 </html>
